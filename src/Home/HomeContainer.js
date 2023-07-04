@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import HomePresenter from "./HomePresenter";
-import { getDiaryList } from "../store/store";
+import { atom, useRecoilState } from 'recoil';
+
+export const diaryList = atom({
+    key: "diaryList",
+    default: []
+})
 
 const HomeContainer = () => {
     const [curDate, setCurDate] = useState(new Date());
     const headText = `${curDate.getFullYear()}년 ${curDate.getMonth() + 1}월`;
-    
-    const list = useSelector((state) => state.diaryList);
-    const dispatch = useDispatch(); // reducer 함수를 호출
+
+    const [list, setList] = useRecoilState(diaryList);
 
     // title 제목
     useEffect(() => {
@@ -26,10 +29,9 @@ const HomeContainer = () => {
                 }
             })
             .then((result) => {
-                console.log(result.data);
-                dispatch(getDiaryList(result.data));
+                setList(result.data);
             });        
-        }, [curDate, dispatch]);
+        }, [curDate]);
         
     const increaseMonth = () => {
         setCurDate(new Date(curDate.getFullYear(), curDate.getMonth() + 1, curDate.getDate()));

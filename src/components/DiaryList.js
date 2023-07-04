@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 
 import MyButton from "./MyButton";
-import { setSortType, setFilter, setSortedList } from "../store/store";
 import axios from "axios";
 import DiaryItem from './DiaryItem';
+import { atom, useRecoilState } from 'recoil';
 
 const sortOptionList = [
     { value: "latest", name: "최신순" },
@@ -19,6 +18,9 @@ const filterOptionList = [
 ];
 
 const ControlMenu = React.memo(({ value, onChange, optionList }) => {
+    useEffect(() => {
+        console.log("Control Menu");
+    })
     return (
         <select className="ControlMenu" value={value} onChange={(e) => onChange(e.target.value)}>
             {optionList.map((it, idx) => (
@@ -30,33 +32,47 @@ const ControlMenu = React.memo(({ value, onChange, optionList }) => {
     );
 });
 
-const DiaryList = ({ diaryList, curDate }) => {
-    const select = useSelector((state) => state);
-    const sortedList = useSelector((state) => state.sortedList)
-    const dispatch = useDispatch();
+export const sortType = atom({
+    key: "sortType",
+    default: "latest"
+});
+
+export const filter = atom({
+    key: "filter",
+    default: "all"
+});
+
+export const sortList = atom({
+    key: "sortedList",
+    default: []
+});
+
+const DiaryList = ({ curDate }) => {
+    const [sortedType, setSortedType] = useRecoilState(sortType);
+    const [filtered, setFiltered] = useRecoilState(filter);
+    const [sortedList, setSortedList] = useRecoilState(sortList);
     const navigate = useNavigate();
 
     useEffect(() => {
         axios
             .get("http://localhost/diary/diary_sort", {
                 params: {
-                    sortOption: select.sortType,
-                    filterOption: select.filter,
+                    sortOption: sortedType,
+                    filterOption: filtered,
                     curDate: curDate
                 }
             })
             .then((result) => {
-                console.log(result.data);
-                dispatch(setSortedList(result.data));
+                setSortedList(result.data);
             });
-    }, [select.filter, select.sortType, curDate, dispatch]);
+    }, [filtered, sortedType, curDate]);
 
     return (
         <div className="DiaryList">
             <div className="menu_wrapper">
                 <div className="left_col">
-                    <ControlMenu value={select.sortType} onChange={(value) => dispatch(setSortType(value))} optionList={sortOptionList} />
-                    <ControlMenu value={select.filter} onChange={(value) => dispatch(setFilter(value))} optionList={filterOptionList} />
+                    <ControlMenu value={sortedType} onChange={(value) => setSortedType(value)} optionList={sortOptionList} />
+                    <ControlMenu value={filtered} onChange={(value) => setFiltered(value)} optionList={filterOptionList} />
                 </div>
 
                 <div className="right_col">

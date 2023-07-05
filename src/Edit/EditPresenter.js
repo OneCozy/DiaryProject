@@ -1,10 +1,10 @@
 import DiaryEditor from '../components/DiaryEditor';
 
 
-const EditPresenter = ({ originData, onEdit }) => {
+const EditPresenter = ({ originData, onEdit, onRemove }) => {
     return(
         <div>
-            {originData && <DiaryEditor isEdit={true} originData={originData} onEdit={onEdit} />}
+            {originData && <DiaryEditor isEdit={true} originData={originData} onEdit={onEdit} onRemove={onRemove} />}
         </div>
     );
 }

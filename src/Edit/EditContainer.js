@@ -29,7 +29,7 @@ const EditContainer = () => {
                 navigate("/", { replace: true });
             }
         }
-    }, [id, list]);
+    }, []);
 
     const onEdit = (targetId, content, emotion) => {
         axios
@@ -42,10 +42,20 @@ const EditContainer = () => {
             });
     }
 
+    const onRemove = (targetId) => {
+        axios
+            .get("http://localhost/diary/deleteDiary", {
+                params: {
+                    id: targetId
+                }
+            });
+    }
+
     return (
         <EditPresenter
             originData={originData}
             onEdit={onEdit}
+            onRemove={onRemove}
         />
     );
 }

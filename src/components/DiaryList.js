@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import MyButton from "./MyButton";
 import axios from "axios";
 import DiaryItem from './DiaryItem';
-import { atom, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
+import { filter, sortList, sortType } from '../states/diaryState';
 
 const sortOptionList = [
     { value: "latest", name: "최신순" },
@@ -18,9 +19,6 @@ const filterOptionList = [
 ];
 
 const ControlMenu = React.memo(({ value, onChange, optionList }) => {
-    useEffect(() => {
-        console.log("Control Menu");
-    })
     return (
         <select className="ControlMenu" value={value} onChange={(e) => onChange(e.target.value)}>
             {optionList.map((it, idx) => (
@@ -30,21 +28,6 @@ const ControlMenu = React.memo(({ value, onChange, optionList }) => {
             ))}
         </select>
     );
-});
-
-export const sortType = atom({
-    key: "sortType",
-    default: "latest"
-});
-
-export const filter = atom({
-    key: "filter",
-    default: "all"
-});
-
-export const sortList = atom({
-    key: "sortedList",
-    default: []
 });
 
 const DiaryList = ({ curDate }) => {
@@ -64,6 +47,7 @@ const DiaryList = ({ curDate }) => {
             })
             .then((result) => {
                 setSortedList(result.data);
+                console.log(result.data);
             });
     }, [filtered, sortedType, curDate]);
 

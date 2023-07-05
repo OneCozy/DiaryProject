@@ -2,12 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import HomePresenter from "./HomePresenter";
-import { atom, useRecoilState } from 'recoil';
-
-export const diaryList = atom({
-    key: "diaryList",
-    default: []
-})
+import { useRecoilState } from 'recoil';
+import { diaryList } from '../states/diaryState';
 
 const HomeContainer = () => {
     const [curDate, setCurDate] = useState(new Date());

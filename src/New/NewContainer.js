@@ -1,18 +1,14 @@
 import axios from 'axios'
-import { atom, useRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import NewPresenter from './NewPresenter';
-
-export const newDiary = atom({
-    key: "newDiary",
-    default: []
-});
+import { newDiary } from '../states/diaryState';
 
 const NewContainer = () => {
 
     const [newDiaryList, setNewDiaryList] = useRecoilState(newDiary);
 
-    const onCreate = (date, content, emotion) => {
+    const onCreate = (content, emotion) => {
         axios
             .get("http://localhost/diary/createDiary", {
                 params: {

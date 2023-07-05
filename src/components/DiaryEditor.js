@@ -7,20 +7,13 @@ import { emotionList } from '../util/emotion';
 import EmotionItem from './EmotionItem';
 import { useCallback, useEffect, useRef } from 'react';
 import { default_content, default_date, default_emotion } from '../states/diaryState';
-import axios from 'axios';
 import { getStringDate } from '../util/date';
 
-const DiaryEditor = ({ onCreate, isEdit, originData, onEdit }) => {
+const DiaryEditor = ({ onCreate, isEdit, originData, onEdit, onRemove }) => {
     const [date, setDate] = useRecoilState(default_date);
     const [content, setContent] = useRecoilState(default_content);
     const [emotion, setEmotion] = useRecoilState(default_emotion);
     const contentRef = useRef();
-
-    useEffect(() => {
-        console.log("date: " + originData.date);
-        console.log("emotion: " + originData.emotion);
-        console.log("content: " + originData.content);
-    }, []);
 
     const handleClickEmote = useCallback((emotion) => {
         setEmotion(emotion);
@@ -46,10 +39,11 @@ const DiaryEditor = ({ onCreate, isEdit, originData, onEdit }) => {
     };
 
     const handleRemove = () => {
-        if (window.confirm('정말 삭제하시겠습니까?')) {
-            
+        if (window.confirm("정말 삭제하시겠습니까?")) {
+            onRemove(originData.id);
+            navigate('/', { replace: true });
         }
-    }
+    };
 
     useEffect(() => {
         if (isEdit) {
@@ -61,11 +55,7 @@ const DiaryEditor = ({ onCreate, isEdit, originData, onEdit }) => {
 
     return (
         <div className="DiaryEditor">
-            <MyHeader
-                headText={isEdit ? "일기 수정하기" : "새 일기쓰기"}
-                leftChild={<MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />}
-                rightChild={<MyButton text={"삭제하기"} type={"negative"} onClick={handleRemove} />}
-            />
+            <MyHeader headText={isEdit ? "일기 수정하기" : "새 일기쓰기"} leftChild={<MyButton text={"< 뒤로가기"} onClick={() => navigate(-1)} />} rightChild={<MyButton text={"삭제하기"} type={"negative"} onClick={handleRemove} />} />
 
             <div>
                 <section>
